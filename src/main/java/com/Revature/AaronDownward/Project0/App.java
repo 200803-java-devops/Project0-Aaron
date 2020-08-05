@@ -8,6 +8,15 @@ public class App {
         //interpret arguments from terminal
         //will later transition to creating unique terminal commands to run code
         //will use terminal args for prototype
+
+        //testing new prototype base methods
+        /*Calendar cal = new Calendar("AaronCalendar");
+        String[] deets = {"my birthday", "8/6/2020", "12:00am", "11:59pm", "a cool birthday", "celebrating someone I'm sure?"};
+        cal.createEvent("birthday", deets);
+        String[] deets2 = {"your birthday", "8/7/2020", "12:00am", "11:59pm", "a cool birthday", "celebrating someone I'm sure?"};
+        cal.createEvent("bday", deets2);
+        Event myBirthday = cal.getEventById("birthday");*/
+
         interpret(args);
 
     }
@@ -48,7 +57,6 @@ public class App {
                 String calendarId = args[1];
                 String eventId = args[2];
                 Calendar calendar = Calendar.getCalendarById(calendarId);
-                Event event = calendar.getEventById(eventId);
 
                 event.print();
                 break;
