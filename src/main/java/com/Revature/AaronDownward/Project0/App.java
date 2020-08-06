@@ -57,6 +57,7 @@ public class App {
                 String calendarId = args[1];
                 String eventId = args[2];
                 Calendar calendar = Calendar.getCalendarById(calendarId);
+                Event event = calendar.getEventById(eventId);
 
                 event.print();
                 break;
