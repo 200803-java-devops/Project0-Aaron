@@ -31,14 +31,18 @@ Java 8
 - Concurrency
     - [ ] multiple users can retrieve and update the same calendar in database
     - [ ] will allow users to sync calendar to latest
+
 Maven 3
-    - [ ] used to build project
+- [ ] used to build project
+
 JUnit 5
-    - [ ] used to extensively test project
+- [ ] used to extensively test project
+
 Git
-    - [ ] used for project version control
+- [ ] used for project version control
+
 PostgreSQL 9+
-    - [ ] used to access and manipulate calendar data in a cloud database
+- [ ] used to access and manipulate calendar data in a cloud database
 
 
 

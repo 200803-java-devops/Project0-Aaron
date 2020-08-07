@@ -3,3 +3,5 @@ target/
 .project
 .settings/
 .vscode/
+user_data/
+bash.exe.stackdump

@@ -8,15 +8,6 @@ public class App {
         //interpret arguments from terminal
         //will later transition to creating unique terminal commands to run code
         //will use terminal args for prototype
-
-        //testing new prototype base methods
-        /*Calendar cal = new Calendar("AaronCalendar");
-        String[] deets = {"my birthday", "8/6/2020", "12:00am", "11:59pm", "a cool birthday", "celebrating someone I'm sure?"};
-        cal.createEvent("birthday", deets);
-        String[] deets2 = {"your birthday", "8/7/2020", "12:00am", "11:59pm", "a cool birthday", "celebrating someone I'm sure?"};
-        cal.createEvent("bday", deets2);
-        Event myBirthday = cal.getEventById("birthday");*/
-
         interpret(args);
 
     }
@@ -25,62 +16,65 @@ public class App {
     // minimal commands I want to implement: newCal, viewCal, viewEvent, newEvent, editEvent  
     private static void interpret(String[] args) {
         if(args.length == 0) return;
-        
+        Calendar calendar;
+        Event event;
+        String calendarId;
+        String eventId;
+                
         //check if first argument matches command and run corresponding command
         switch(args[0]) {
             // create new Calendar
             case "newCal":
-                String id = args[1];
+                calendarId = args[1];
 
-                Calendar.createCalendar(id);
+                Calendar.createCalendar(calendarId);
                 break;
             
             // print Calendar
             case "viewCal":
-                String calId = args[1];
-                Calendar cal = Calendar.getCalendarById(calId);
+                calendarId = args[1];
+                calendar = Calendar.getCalendarById(calendarId);
 
                 String displayFormat = args[2];
                 if(displayFormat == "custom") {
                     String startDate = args[3];
                     String endDate = args[4];
 
-                    cal.print(displayFormat, startDate, endDate);
+                    calendar.print(displayFormat, startDate, endDate);
                 }
                 else {
-                    cal.print(displayFormat);
+                    calendar.print(displayFormat);
                 }
                 break;
 
             // view event
             case "viewEvent":
-                String calendarId = args[1];
-                String eventId = args[2];
-                Calendar calendar = Calendar.getCalendarById(calendarId);
-                Event event = calendar.getEventById(eventId);
+                calendarId = args[1];
+                eventId = args[2];
+                calendar = Calendar.getCalendarById(calendarId);
+                event = calendar.getEventById(eventId);
 
                 event.print();
                 break;
 
             case "newEvent":
-                String cId = args[1];
-                String evId = args[2];
-                String[] details = Arrays.copyOfRange(args, 3, args.length - 1);
-                Calendar calendars = Calendar.getCalendarById(cId);
+                calendarId = args[1];
+                eventId = args[2];
+                String[] details = Arrays.copyOfRange(args, 3, args.length);
+                calendar = Calendar.getCalendarById(calendarId);
 
-                calendars.createEvent(evId, details);
+                calendar.createEvent(eventId, details);
                 break;
 
             // edit event
             case "editEvent":
-                String calendId = args[1];
-                String eveId = args[2];
-                String param = args[3];
+                calendarId = args[1];
+                eventId = args[2];
+                String parameter = args[3];
                 String value = args[4];
-                Calendar calen = Calendar.getCalendarById(calendId);
-                Event even = calen.getEventById(eveId);
+                calendar = Calendar.getCalendarById(calendarId);
 
-                even.edit(param, value);
+                calendar.editEvent(eventId, parameter, value);
                 break;
 
             default:
