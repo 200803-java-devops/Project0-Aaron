@@ -10,6 +10,7 @@ The intended framework and scope of the project is still under development.
         - [ ] Week
         - [ ] Month
         - [ ] User specified time period
+    - [ ] Provide option to print a nicer looking file holding the calendar
 - [ ] Allow user to schedule and edit events
     - [ ] Edit date, time, name, location, attendees, etc.
     - [ ] Set-up reminder system
