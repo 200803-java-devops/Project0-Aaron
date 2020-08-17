@@ -8,12 +8,15 @@ import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.io.File;
 
 public class Calendar {
 
     private String id;
     private Map<String, Event> events;
+
+    private static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     //constructor to intialize a new calendar with given id
     public Calendar(String id) {
@@ -42,41 +45,6 @@ public class Calendar {
         this.events.put(eventId, new Event(eventDetails));
         String filepath = "C:\\Users\\downw\\Revature Training\\Project0\\Project0-Aaron\\user_data\\" + this.id + ".json";
         writeToCalendarFile(this, filepath);
-	}
-
-    //edits a specified parameter of an event with the given value
-    public void editEvent(String eventId, String parameter, String value) {
-        Event event = this.events.get(eventId);
-        switch (parameter) {
-            case "id":
-                System.out.println("Can't change id of existing event");                
-                break;
-            case "calendarId":
-                System.out.println("Can't change calendar of existing event");
-                break;
-            case "attendees":
-                System.out.println("Not yet implementing way to edit attendess");
-                break;
-            case "name":
-                event.name = value;
-                break;
-            case "date":
-                event.date = value;
-                break;
-            case "startTime":
-                event.startTime = value;
-                break;
-            case "endTime":
-                event.endTime = value;
-                break;
-            case "description":
-                event.description = value;
-                break;
-            default:
-                System.out.println("Not an existing parameter of an event.");
-        }
-        String filepath = "C:\\Users\\downw\\Revature Training\\Project0\\Project0-Aaron\\user_data\\" + this.id + ".json";
-        Calendar.writeToCalendarFile(this, filepath);
 	}
     
     //creates a new .json file for a calendar if it doesn't exist
@@ -118,10 +86,8 @@ public class Calendar {
             json += "\n\t\t{\n\t\t\t\"eventId\": \"" + event.id + "\",";
             json += "\n\t\t\t\"calendarId\": \"" + event.calendarId + "\",";
             json += "\n\t\t\t\"eventName\": \"" + event.name + "\",";
-            json += "\n\t\t\t\"date\": \"" + event.date + "\",";
-            json += "\n\t\t\t\"endDate\": \"" + event.endDate + "\",";
-            json += "\n\t\t\t\"startTime\": \"" + event.startTime + "\",";
-            json += "\n\t\t\t\"endTime\": \"" + event.endTime + "\",";
+            json += "\n\t\t\t\"startDateTime\": \"" + event.startDateTime.format(Calendar.dateTimeFormat) + "\",";
+            json += "\n\t\t\t\"endDateTime\": \"" + event.endDateTime.format(Calendar.dateTimeFormat) + "\",";
             json += "\n\t\t\t\"description\": \"" + event.description + "\",";
             json += "\n\t\t\t\"attendees\": [";
             for (int i = 0; i < event.attendees.size(); i++) {
@@ -158,18 +124,22 @@ public class Calendar {
     private static Calendar createCalendarObjFromFile(ArrayList<String> textFromFile) {
         String calendarId = returnJSONValue(textFromFile.get(1));
         Calendar calendar = new Calendar(calendarId);
-
         Event event;
+        
         for(int i = 4; i < textFromFile.size(); i++) {
             if(textFromFile.get(i).contains("eventId")) {
                 String eventId = returnJSONValue(textFromFile.get(i++));
                 //already have calendarId variable store, skip to next line
                 i++;
                 String eventName = returnJSONValue(textFromFile.get(i++));
-                String date = returnJSONValue(textFromFile.get(i++));
-                String endDate = returnJSONValue(textFromFile.get(i++));
-                String startTime = returnJSONValue(textFromFile.get(i++));
-                String endTime = returnJSONValue(textFromFile.get(i++));
+                String startDateTime = returnJSONValue(textFromFile.get(i++));
+                String date = dateFromFormattedDateTime(startDateTime);
+                String startTime = timeFromFormattedDateTime(startDateTime);
+
+                String endDateTime = returnJSONValue(textFromFile.get(i++));
+                String endDate = dateFromFormattedDateTime(endDateTime);
+                String endTime = timeFromFormattedDateTime(endDateTime);
+                
                 String description = returnJSONValue(textFromFile.get(i));
                 ArrayList<String> attendees = new ArrayList<String>();
                 while (textFromFile.get(i + 3).contains("attendeeName")) {
@@ -183,7 +153,24 @@ public class Calendar {
         return calendar;
     }
 
-    //extracts the value from a line of a JSON code
+    private static String timeFromFormattedDateTime(String formattedDateTime) {
+        String time = "";
+        String hour = formattedDateTime.substring(11, 13);
+        String min = formattedDateTime.substring(14, 16);
+        time = hour + min;
+        return time;
+    }
+
+    private static String dateFromFormattedDateTime(String formattedDateTime) {
+        String date = "";
+        String day = formattedDateTime.substring(0, 2);
+        String month = formattedDateTime.substring(3, 5);
+        String year = formattedDateTime.substring(6, 10);
+        date = day + month + year;
+        return date;
+    }
+
+    // extracts the value from a line of a JSON code
     //pulls value from between the second set of quotation marks
     //ex:           "key": "value"
     private static String returnJSONValue(String jsonLine) {
@@ -194,7 +181,7 @@ public class Calendar {
     }
 
     //returns a string array list of each line from a text file
-    private static ArrayList<String> readCalendarFile(String filepath) {
+    public static ArrayList<String> readCalendarFile(String filepath) {
         ArrayList<String> textFromFile = new ArrayList<String>();
         try {
             File file = new File(filepath);
@@ -206,13 +193,10 @@ public class Calendar {
         } catch (FileNotFoundException e) {
             System.err.println("Problem finding or scanning file");
             e.printStackTrace();
+            return null;
         }
         return textFromFile;
     }
-
-	public static boolean calendarExists(String calendarId) {
-		return true;
-	}
 
 	public void deleteEvent(String eventId) {
         events.remove(eventId);

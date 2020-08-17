@@ -36,8 +36,8 @@ public class NewEventCommand implements Callable<Integer> {
     @Option(names = {"-i", "--info"}, paramLabel = "description", description = "The description of the event")
     private String description;
 
-    @Option(names = {"-a", "--attendees"}, paramLabel = "attendees", description = "Invitees to the invite, separate names by commas for multiple attendees")
-    private String attendees;
+    @Option(names = {"-a", "--attendees"}, paramLabel = "attendees", arity = "1..*", description = "Invitees to the invite, separate names by commas for multiple attendees")
+    private String[] attendees;
 
     @Override
     public Integer call() {
@@ -53,12 +53,13 @@ public class NewEventCommand implements Callable<Integer> {
         else {
             Calendar calendar = Calendar.getCalendarById(calendarId);
             ArrayList<String> attendeesList = new ArrayList<String>();
-            if (attendees != null) {
+            //should no longer be required
+            /*if (attendees != null) {
                 String[] attendeesArray = attendees.split(",");
                 for (String attendee : attendeesArray) {
                     attendeesList.add(attendee);
                 }
-            }
+            }*/
 
             calendar.createEvent(eventId, name, date, endDate, startTime, endTime, description, attendeesList);
         }

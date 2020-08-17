@@ -1,5 +1,6 @@
 package com.Revature.AaronDownward.Project0;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,9 +11,11 @@ public class UserInput {
         ArrayList<String> wizardParams = new ArrayList<String>();
         System.out.println("Enter the calendar ID of the calendar you would like to view:");
         String calendarId = scanner.nextLine();
+        calendarId = InputValidation.requiredFieldLoop(calendarId, scanner);
         wizardParams.add(calendarId);
         System.out.println("Would you like to view a day, week, month, or a custom time period? (d/w/m/c)");
         String printOption = scanner.nextLine().toLowerCase();
+        printOption = InputValidation.requiredFieldLoop(printOption, scanner);
         switch (printOption) {
             case ("d"):
             case ("day"):
@@ -47,7 +50,7 @@ public class UserInput {
                 wizardParams.add(endDate);
                 break;
             default:
-                System.out.println("Something went wrong in switch statement:");
+                System.out.println("Invalid viewing option entered. Exiting wizard.");
                 scanner.close();
                 return null;
         }
@@ -60,20 +63,21 @@ public class UserInput {
         System.out.println("A calendar ID is required to create a calendar.");
         System.out.println("Please enter a calendar ID for this calendar:");
         String calendarId = scanner.nextLine();
+        calendarId = InputValidation.requiredFieldLoop(calendarId, scanner);
         scanner.close();
         return calendarId;
     }
 
     public static String[] eventCreationWizard() {
         Scanner scanner = new Scanner(System.in);
-        String answer;
         System.out.println("Please enter the calendar ID of the calendar you want to add this event to:");
         String calendarId = scanner.nextLine();
+        calendarId = InputValidation.requiredFieldLoop(calendarId, scanner);
 
-        if (!Calendar.calendarExists(calendarId)) {
+        if (!InputValidation.calendarExists(calendarId)) {
             System.out.println("That calendar doesn't exist. Would you like to create one? (y/n)");
-            answer = scanner.nextLine().toLowerCase();
-            if (answer == "yes" || answer == "y") {
+            String createCalendar = scanner.nextLine().toLowerCase();
+            if (createCalendar.equals("yes") || createCalendar.equals("y")) {
                 System.out.println("Enter the calendar ID for the new calendar:");
                 calendarId = scanner.nextLine();
                 Calendar.createCalendar(calendarId);
@@ -84,37 +88,65 @@ public class UserInput {
             }
         }
 
-        System.out.println("Please enter the event ID:");
+        System.out.println("Please enter the event ID: (required)");
         String eventId = scanner.nextLine();
+        eventId = InputValidation.requiredFieldLoop(eventId, scanner);
 
         System.out.println("Please enter the name of your event:");
         String name = scanner.nextLine();
 
-        System.out.println("Please enter the date the event will occur:");
+        System.out.println("Please enter the date the event will occur*: (dd/mm/yy or dd/mm) (*required)");
         String date = scanner.nextLine();
+        date = InputValidation.requiredFieldLoop(date, scanner);
+        date = InputValidation.invalidDateLoop(date, scanner);
 
         System.out.println("Will your event last multiple days? (y/n)");
-        answer = scanner.nextLine();
-        String endDate;
-        if (answer.equals("yes") || answer.equals("y")) {
-            System.out.println("Please enter the end date for your event:");
+        String isMultipleDays = scanner.nextLine();
+        String endDate = "";
+        if (isMultipleDays.equals("yes") || isMultipleDays.equals("y")) {
+            System.out.println("Please enter the end date for your event: (dd/mm/yy or dd/mm)");
             endDate = scanner.nextLine();
-        } else {
-            endDate = "";
+            Boolean endDateNotValid;
+            do {
+                endDateNotValid = false;
+                endDate = InputValidation.invalidDateLoop(endDate, scanner);
+                if (endDate.equals("")) {
+                    break;
+                }
+                if (InputValidation.dateIsBefore(endDate, date)) {
+                    System.out.println("Date entered is before or on the start date. Please enter a date after the start date (" + date + ")");
+                    endDate = scanner.nextLine();
+                    endDateNotValid = true;
+                }
+            } while (endDateNotValid);
         }
 
-        System.out.println("Please enter the start time of your event:");
+        System.out.println("Please enter the start time of your event: (hh:mm - hhmm 24-hour clock)");
         String startTime = scanner.nextLine();
+        startTime = InputValidation.invalidTimeLoop(startTime, scanner);
 
-        System.out.println("Please enter the end time of your event:");
+        System.out.println("Please enter the end time of your event: (hh:mm - hhmm 24-hour clock)");
         String endTime = scanner.nextLine();
+        Boolean endTimeNotValid;
+        do {
+            endTimeNotValid = false;
+            endTime = InputValidation.invalidTimeLoop(endTime, scanner);
+            if (endTime.equals("")) {
+                break;
+            }
+            if ((InputValidation.timeIsBefore(endTime, startTime) && InputValidation.dateIsEqaul(endDate, date)) || InputValidation.dateIsBefore(endDate, date)) {
+                System.out.println("Time entered is before or at the start time. Please enter a time after the start time: (" + startTime + ")");
+                endTime = scanner.nextLine();
+                endTimeNotValid = true;
+            }
+        } while (endTimeNotValid);
 
         System.out.println("Please enter a description for your event:");
         String description = scanner.nextLine();
 
         System.out.println("How many people will be attending the event?");
         int number = Integer.parseInt(scanner.nextLine());
-        String attendees = "";
+        String attendees = (number == 0) ? null : "";
         String attendee;
         for (int i = 0; i < number; i++) {
             System.out.println("Enter the name of attendee " + (i + 1) + ":");
@@ -144,8 +176,8 @@ public class UserInput {
 
     public static String[] eventEditWizard() {
         Scanner scanner = new Scanner(System.in);
-        String calendarId = null;
-        String eventId = null;
+        String calendarId = "";
+        String eventId = "";
         String delete = "false";
         String name = null;
         String date = null;
@@ -159,10 +191,25 @@ public class UserInput {
         String[] parametersArray = {"name", "date", "end date", "start time", "end time", "description", "attendees"};
         System.out.println("Please enter the calendar ID of the calendar from which you'd like to edit an event:");
         calendarId = scanner.nextLine();
+        calendarId = InputValidation.requiredFieldLoop(calendarId, scanner);
         eventDetails[0] = calendarId;
         System.out.println("Please enter the Event ID of the event you would like to edit:");
         eventId = scanner.nextLine();
+        eventId = InputValidation.requiredFieldLoop(eventId, scanner);
         eventDetails[1] = eventId;
+        Calendar calendar = Calendar.getCalendarById(calendarId);
+        Event event = calendar.getEventById(eventId);
+        DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HHmm");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("ddMMyyyy");
+        String currentStartDate = event.startDateTime.format(dateFormat);
+        String currentStartTime = event.startDateTime.format(timeFormat);
+        String currentEndDate = event.endDateTime.format(dateFormat);
+        String currentEndTime = event.endDateTime.format(timeFormat);
+        if(event.startDateTime.equals(event.endDateTime)) {
+            currentEndDate = "";
+            currentEndTime = "";
+        }
+        String[] currentDateTimes = {currentStartDate, currentEndDate, currentStartTime, currentEndTime};
         System.out.println("Would you like to delete this event? (y/n)");
         String deleteResponse = scanner.nextLine();
         if (deleteResponse.equals("y") || deleteResponse.equals("yes")) {
@@ -176,63 +223,78 @@ public class UserInput {
         if (editSpecificParameter.equals("y") || editSpecificParameter.equals("yes")) {
             boolean repeatLoop = true;
             String parameter;
-            String parameterValue;
             do {
-                System.out.println(
-                        "What event detail would you like to change? (name, date, enddate, starttime, endtime, description, attendees)");
-                parameter = scanner.nextLine();
-                if (parameter.equals("attendees")) {
-                    System.out.println(
-                            "Would you like to replace the current event attendee(s)? (y/n) (otherwise will add to attendee list)");
-                    String replaceResponse = scanner.nextLine();
-                    if (replaceResponse.equals("y") || replaceResponse.equals("yes")) {
-                        replaceAttendees = "true";
-                        eventDetails[10] = replaceAttendees;
-                    }
-                    System.out.println("Please enter the number of attendees you want to include:");
-                    int attendeeCount = Integer.parseInt(scanner.nextLine());
-                    attendees = "";
-                    String attendee;
-                    for (int i = 0; i < attendeeCount; i++) {
-                        System.out.println("Enter the name of attendee " + (i + 1) + ":");
-                        attendee = scanner.nextLine();
-                        attendees += attendee;
-                        if ((i + 1) < attendeeCount) {
-                            attendees += ",";
+                System.out.println("What event detail would you like to change? (name, date, enddate, starttime, endtime, description, attendees)");
+                parameter = scanner.nextLine().toLowerCase();
+                switch (parameter) {
+                    case "attendees":
+                        System.out.println("Would you like to replace the current event attendee(s)? (y/n) (otherwise will add to attendee list)");
+                        String replaceResponse = scanner.nextLine();
+                        if (replaceResponse.equals("y") || replaceResponse.equals("yes")) {
+                            replaceAttendees = "true";
+                            eventDetails[10] = replaceAttendees;
                         }
-                    }
-                    eventDetails[9] = attendees;
-                } else {
-                    System.out.println("Please enter the value you would like to enter for " + parameter + ":");
-                    parameterValue = scanner.nextLine().toLowerCase();
-                    switch (parameter) {
-                        case "name":
-                            name = parameterValue;
-                            eventDetails[3] = name;
-                            break;
-                        case "date":
-                            date = parameterValue;
-                            eventDetails[4] = date;
-                            break;
-                        case "enddate":
-                            endDate = parameterValue;
-                            eventDetails[5] = endDate;
-                            break;
-                        case "starttime":
-                            startTime = parameterValue;
-                            eventDetails[6] = startTime;
-                            break;
-                        case "endtime":
-                            endTime = parameterValue;
-                            eventDetails[7] = endTime;
-                            break;
-                        case "description":
-                            description = parameterValue;
-                            eventDetails[8] = description;
-                            break;
-                        default:
-                            System.out.println("invalid parameter");
-                    }
+                        System.out.println("Please enter the number of attendees you want to include:");
+                        int attendeeCount = Integer.parseInt(scanner.nextLine());
+                        attendees = "";
+                        String attendee;
+                        for (int i = 0; i < attendeeCount; i++) {
+                            System.out.println("Enter the name of attendee " + (i + 1) + ":");
+                            attendee = scanner.nextLine();
+                            attendees += attendee;
+                            if ((i + 1) < attendeeCount) {
+                                attendees += ",";
+                            }
+                        }
+                        eventDetails[9] = attendees;
+                        break;
+                    case "name":
+                        System.out.println("Please enter the value you would like to enter for " + parameter + ":");
+                        name = scanner.nextLine();
+                        eventDetails[3] = name;
+                        break;
+                    case "date":
+                        System.out.println("Please enter the value you would like to enter for " + parameter + ":");
+                        date = scanner.nextLine();
+                        date = InputValidation.requiredFieldLoop(date, scanner);
+                        date = InputValidation.timeDateValidationLoop(date, currentDateTimes, 0, scanner);
+                        currentDateTimes[0] = date;
+                        eventDetails[4] = date;
+                        if (currentDateTimes[1].equals("")) {
+                            eventDetails[5] = date;
+                        }
+                        break;
+                    case "enddate":
+                        System.out.println("Please enter the value you would like to enter for " + parameter + ":");
+                        endDate = scanner.nextLine();
+                        endDate = InputValidation.timeDateValidationLoop(endDate, currentDateTimes, 1, scanner);
+                        currentDateTimes[1] = endDate;
+                        eventDetails[5] = endDate;
+                        break;
+                    case "starttime":
+                        System.out.println("Please enter the value you would like to enter for " + parameter + ":");    
+                        startTime = scanner.nextLine();
+                        startTime = InputValidation.timeDateValidationLoop(startTime, currentDateTimes, 2, scanner);
+                        currentDateTimes[2] = startTime;
+                        eventDetails[6] = startTime;
+                        if (currentDateTimes[3].equals("")) {
+                            eventDetails[7] = startTime;
+                        }
+                        break;
+                    case "endtime":
+                        System.out.println("Please enter the value you would like to enter for " + parameter + ":");    
+                        endTime = scanner.nextLine();
+                        endTime = InputValidation.timeDateValidationLoop(endTime, currentDateTimes, 3, scanner);
+                        currentDateTimes[3] = endTime;
+                        eventDetails[7] = endTime;
+                        break;
+                    case "description":
+                        System.out.println("Please enter the value you would like to enter for " + parameter + ":");
+                        description = scanner.nextLine();
+                        eventDetails[8] = description;
+                        break;
+                    default:
+                        System.out.println("invalid parameter");
                 }
                 System.out.println("Would you like to change another event detail? (y/n)");
                 String loopResponse = scanner.nextLine();
@@ -249,9 +311,20 @@ public class UserInput {
                 if (!changeResponse.equals("y") && !changeResponse.equals("yes")) {
                     continue;
                 }
-                if (i < parametersArray.length -1) {
+                if (i < parametersArray.length - 1) {
                     System.out.println("Please enter the value you want to change your event's " + parametersArray[i] + " to:");
-                    eventDetails[i + 3] = scanner.nextLine();
+                    String responseValue = scanner.nextLine();
+                    if (i >= 1 && i <= 4 ) {
+                        if (i == 1) {
+                            responseValue = InputValidation.requiredFieldLoop(responseValue, scanner);
+                        }
+                        responseValue = InputValidation.timeDateValidationLoop(responseValue, currentDateTimes, i - 1, scanner);
+                        currentDateTimes[i - 1] = responseValue;
+                    }
+                    eventDetails[i + 3] = responseValue;
+                    if ((i == 1 || i == 3) && currentDateTimes[i].equals("")) {
+                        eventDetails[i + 4] = responseValue;
+                    }
                 } else {
                     System.out.println("Would you like to replace the current event attendee(s)? (y/n) (otherwise will add to attendee list)");
                     String replaceResponse = scanner.nextLine();
