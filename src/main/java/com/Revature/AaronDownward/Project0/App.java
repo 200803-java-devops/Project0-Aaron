@@ -21,6 +21,7 @@ public class App implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        System.out.println(DatabaseAccess.getEventTimestamp("testcalendar1", "1"));
         System.out.println("You called the main \"clalendar\" command");
         return 0;
     }    

@@ -133,4 +133,56 @@ public class DatabaseAccess {
         }
         return true;
     }
+
+    public static String getEventTimestamp (String calendarId, String eventId) {
+        String query = "SELECT event_last_edit FROM events WHERE calendar_id = ? AND event_id = ?;";
+        PreparedStatement statement; 
+        ResultSet rs = null;
+        String timestamp = "";
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(query);
+            statement.setString(1, calendarId);
+            statement.setString(2, eventId);
+            rs = statement.executeQuery();
+            if (rs.next()) {
+                timestamp = rs.getTimestamp("event_last_edit").toString();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        return timestamp;
+    }
+
+    public static String getCalendarTimeStamp(String calendarId) {
+		String query = "SELECT calendar_last_edit FROM calendars WHERE calendar_id = ?;";
+        PreparedStatement statement; 
+        ResultSet rs = null;
+        String timestamp = "";
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(query);
+            statement.setString(1, calendarId);
+            rs = statement.executeQuery();
+            if (rs.next()) {
+                timestamp = rs.getTimestamp("calendar_last_edit").toString();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        return timestamp;
+	}
+
+    public static boolean updateCalendarInDB(String calendarId, Calendar calendar) {
+
+        return true;
+    }
+
+    public static boolean updateEventInDB(String calendarId, Calendar calendar) {
+        
+        return true;
+    }
+
 }
