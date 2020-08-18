@@ -8,13 +8,14 @@ import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.File;
 
 public class Calendar {
 
     private String id;
-    private Map<String, Event> events;
+    public Map<String, Event> events;
 
     private static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
@@ -45,7 +46,14 @@ public class Calendar {
         this.events.put(eventId, new Event(eventDetails));
         String filepath = "C:\\Users\\downw\\Revature Training\\Project0\\Project0-Aaron\\user_data\\" + this.id + ".json";
         writeToCalendarFile(this, filepath);
-	}
+    }
+    
+    public void createEvent(String eventId, String eventName, LocalDateTime startDateTime, LocalDateTime endDateTime,String description, ArrayList<String> attendees) {
+        this.events.put(eventId, new Event(eventId, this.id, eventName, startDateTime, endDateTime, description, attendees));
+        String filepath = "C:\\Users\\downw\\Revature Training\\Project0\\Project0-Aaron\\user_data\\" + this.id + ".json";
+        writeToCalendarFile(this, filepath);
+
+    }
     
     //creates a new .json file for a calendar if it doesn't exist
     private static void createCalendarFile(Calendar calendar, String filepath) {

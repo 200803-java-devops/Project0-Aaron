@@ -53,6 +53,16 @@ public class Event {
         this.attendees = attendees;
     }
 
+    public Event(String eventId, String calendarId, String eventName, LocalDateTime startDateTime, LocalDateTime endDateTime, String description, ArrayList<String> attendees) {
+        this.id = eventId;
+        this.calendarId = calendarId;
+        this.name = eventName;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.description = description;
+        this.attendees = attendees;
+    }
+
     //constructor with all parameters passed in a String[] = {calendarId, eventId, name, date, endDate, startTime, endTime, description, attendees}
     //will require that input for creating events requires an existing calendar ID, unique event ID, and date.
     //will format date strings to ddMMyyyy will format time strings to HHmm based on 24-hour clock
@@ -102,7 +112,7 @@ public class Event {
         this.attendees = attendees;
 	}
 
-    //values that are to be edited will be passed in as non-null values
+	//values that are to be edited will be passed in as non-null values
     //will format date strings to ddMMyyyy will format time strings to HHmm based on 24-hour clock
     //will ensure that end time/date isn't before start time chronologically
 	public void editEvent(String name, String date, String endDate, String startTime, String endTime, String description, String[] attendees, boolean replaceAttendees) {

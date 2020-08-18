@@ -21,7 +21,7 @@ public class App implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("Ran clalendar command");
+        System.out.println("You called the main \"clalendar\" command");
         return 0;
     }    
 
