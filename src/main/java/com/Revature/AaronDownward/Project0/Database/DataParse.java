@@ -1,9 +1,12 @@
-package com.Revature.AaronDownward.Project0;
+package com.Revature.AaronDownward.Project0.Database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
+import com.Revature.AaronDownward.Project0.Objects.Calendar;
+import com.Revature.AaronDownward.Project0.Objects.Event;
 
 public class DataParse {
     

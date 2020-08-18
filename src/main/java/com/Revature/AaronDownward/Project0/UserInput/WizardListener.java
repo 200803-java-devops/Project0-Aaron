@@ -1,7 +1,9 @@
-package com.Revature.AaronDownward.Project0;
+package com.Revature.AaronDownward.Project0.UserInput;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+
+import com.Revature.AaronDownward.Project0.Database.DatabaseAccess;
 
 public class WizardListener implements Callable<String> {
 

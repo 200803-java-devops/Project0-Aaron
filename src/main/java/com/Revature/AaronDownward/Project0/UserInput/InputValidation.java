@@ -1,9 +1,11 @@
-package com.Revature.AaronDownward.Project0;
+package com.Revature.AaronDownward.Project0.UserInput;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import com.Revature.AaronDownward.Project0.Objects.Calendar;
 
 public class InputValidation {
     
