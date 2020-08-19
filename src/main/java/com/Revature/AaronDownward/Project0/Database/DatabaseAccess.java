@@ -178,14 +178,110 @@ public class DatabaseAccess {
         return timestamp;
 	}
 
-    public static boolean updateCalendarInDB(String calendarId, Calendar calendar) {
+	public static Boolean checkForCalendarInDB(Calendar calendar) {
+        String query = "SELECT * FROM calendars WHERE calendar_id = ?;";
+        PreparedStatement statement; 
+        ResultSet rs = null;
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(query);
+            statement.setString(1, calendar.id);
+            rs = statement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
 
-        return true;
-    }
+    public static boolean checkForEventInDB(String calendarId, String eventId) {
+		String query = "SELECT * FROM events WHERE calendar_id = ? AND event_id = ?;";
+        PreparedStatement statement; 
+        ResultSet rs = null;
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(query);
+            statement.setString(1, calendarId);
+            statement.setString(2, eventId);
+            rs = statement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
+    // TODO implement method along with adding database timestamps to Calendar and Event objects
+	public static Boolean compareToCalendarInDB(Calendar calendar) {
+        return false;
+	}
 
-    public static boolean updateEventInDB(String calendarId, Calendar calendar) {
-        
+	public static boolean removeEventFromDB(String calendarId, String eventId) {
+        String calendarUpdate = "UPDATE calendars SET calendar_last_edit = ? WHERE calendar_id = ?;";
+        String eventDelete = "DELETE FROM events WHERE event_id = ?;";
+        String attendeesDelete = "DELETE FROM attendees WHERE event_id = ?;";
+        PreparedStatement statement;
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(calendarUpdate);
+            statement.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+            statement.setString(2, calendarId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(eventDelete);
+            statement.setString(1, eventId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(attendeesDelete);
+            statement.setString(1, eventId);
+            statement.executeUpdate();       
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
-    }
+	}
+
+	public static boolean removeCalendarFromDB(String calendarId) {
+		String calendarDelete = "DELETE FROM calendars WHERE calendar_id = ?;";
+        String eventDelete = "DELETE FROM events WHERE calendar_id = ?;";
+        String attendeesDelete = "DELETE FROM attendees WHERE calendar_id = ?;";
+        PreparedStatement statement;
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(calendarDelete);
+            statement.setString(1, calendarId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(eventDelete);
+            statement.setString(1, calendarId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            statement = ConnectionUtil.getConnection().prepareStatement(attendeesDelete);
+            statement.setString(1, calendarId);
+            statement.executeUpdate();       
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+	}
 
 }

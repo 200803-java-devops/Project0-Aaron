@@ -7,7 +7,6 @@ import com.Revature.AaronDownward.Project0.Commands.NewCalendarCommand;
 import com.Revature.AaronDownward.Project0.Commands.NewEventCommand;
 import com.Revature.AaronDownward.Project0.Commands.ViewCalendarCommand;
 import com.Revature.AaronDownward.Project0.Commands.ViewEventCommand;
-import com.Revature.AaronDownward.Project0.Database.DatabaseAccess;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -31,10 +30,10 @@ public class App implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        if (this.help) {
+        if (help) {
             CommandLine.usage(this, System.out, CommandLine.Help.Ansi.AUTO);
         } else {
-            System.out.println("Welcome to the Command Line Calendar and Scheduling App:CLalendar");
+            System.out.println("Welcome to the Command Line Calendar and Scheduling App:");
             System.out.println("\t\t\t\tCLalendar!!");
             System.out.println("Enter clalendar -h(--help) into the terminal for usage help");
 

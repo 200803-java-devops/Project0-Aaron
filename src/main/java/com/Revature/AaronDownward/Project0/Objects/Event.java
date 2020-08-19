@@ -13,6 +13,7 @@ public class Event {
     public LocalDateTime startDateTime;
     public LocalDateTime endDateTime;
     public String description;
+    public LocalDateTime databaseTimestamp;
     public List<String> attendees;
 
     //constructor with all parameters passed in separately as Strings with a List<String> object for attendees

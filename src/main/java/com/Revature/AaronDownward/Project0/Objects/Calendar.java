@@ -14,7 +14,8 @@ import java.io.File;
 
 public class Calendar {
 
-    private String id;
+    public String id;
+    public LocalDateTime databaseTimestamp;
     public Map<String, Event> events;
 
     private static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -62,10 +63,10 @@ public class Calendar {
             if (file.createNewFile()) {
                 System.out.println("File created: " + file.getName());
             } else {
-                System.out.println("File already exists.");
+                //System.out.println("File already exists.");
             }
         } catch (IOException e) {
-            System.err.println("Unable to create file");
+            //System.err.println("Unable to create file");
             e.printStackTrace();
         }
     }
@@ -77,9 +78,9 @@ public class Calendar {
             FileWriter writer = new FileWriter(filepath);
             writer.write(textForFile);
             writer.close();
-            System.out.println("Successfully wrote to file");
+            //System.out.println("Successfully wrote to file");
         } catch (IOException e) {
-            System.err.println("Problem while writing to file");
+            //System.err.println("Problem while writing to file");
             e.printStackTrace();
         }
     }
@@ -130,6 +131,9 @@ public class Calendar {
     //uses the text from a calendarId.json file and constructs an object initialized to values in text
     //somewhat brute force method and prone to problems if json file doesn't follow exact format
     private static Calendar createCalendarObjFromFile(ArrayList<String> textFromFile) {
+        if (textFromFile == null) {
+            return null;
+        }
         String calendarId = returnJSONValue(textFromFile.get(1));
         Calendar calendar = new Calendar(calendarId);
         Event event;
@@ -199,8 +203,10 @@ public class Calendar {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.err.println("Problem finding or scanning file");
-            e.printStackTrace();
+            //System.err.println("Problem finding or scanning file");
+            return null;
+        } catch (Exception e) {
+            //System.err.println("Some other problem happened");
             return null;
         }
         return textFromFile;

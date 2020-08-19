@@ -1,11 +1,14 @@
 package com.Revature.AaronDownward.Project0.UserInput;
 
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.Revature.AaronDownward.Project0.Objects.Calendar;
+import com.Revature.AaronDownward.Project0.Objects.Event;
 
 public class InputValidation {
     
@@ -227,6 +230,68 @@ public class InputValidation {
             }
 		} while (endDateTimeNotValid);
 		return timeOrDate;
+	}
+
+	public static String checkCalendarExistsLoop(String calendarId, Scanner scanner) {
+		Calendar calendar = Calendar.getCalendarById(calendarId);
+		while (calendar == null || calendarId.equals("")) {
+			System.out.println("That calendar doesn't exist. Please enter a valid calendarID of an existing calendar:");
+			calendarId = scanner.nextLine();
+			calendar = Calendar.getCalendarById(calendarId);
+		}
+		return calendarId;
+	}
+
+	public static String checkEventExistsLoop(String calendarId, String eventId, Scanner scanner, String command) {
+		Calendar calendar = Calendar.getCalendarById(calendarId);
+		Event event = calendar.getEventById(eventId);
+		if (command.equals("view") || command.equals("edit")) {
+			while(event == null || eventId.equals("")) {
+				System.out.println("That event doesn't exist. Please enter a valid eventId of an existing event in the calendar " + calendarId);
+				eventId = scanner.nextLine();
+				event = calendar.getEventById(eventId);
+			}
+		}
+		if (command.equals("add")) {
+			while(event != null || eventId.equals("")) {
+				System.out.println("An event with that eventId already exists. Please enter a unique eventId for the event you want to add to the calendar " + calendarId);
+				eventId = scanner.nextLine();
+				event = calendar.getEventById(eventId);
+			}
+		}
+		return eventId;
+	}
+
+	public static String calendarIdValidationLoop(String calendarId, Scanner scanner) {
+		if (calendarId.equals("")) {
+			calendarId = requiredFieldLoop(calendarId, scanner);
+		}
+		calendarId = checkCalendarExistsLoop(calendarId, scanner);
+		return calendarId;
+	}
+
+	public static String idForCreationLoop(String calendarId, Scanner scanner) {
+		if (calendarId.equals("")) {
+			calendarId = requiredFieldLoop(calendarId, scanner);
+		}
+		while (!checkValidNewCalendarId(calendarId)) {
+			System.out.println("Invalid calendarId. Please enter a non-empty, unique calendarId that can be in a valid filename");
+			calendarId = scanner.nextLine();
+		}
+		return calendarId;
+	}
+
+	public static Boolean checkValidNewCalendarId(String calendarId) {
+		if (Calendar.getCalendarById(calendarId) != null) {
+			return false;
+		}
+		String filepath = "C:\\Users\\downw\\Revature Training\\Project0\\Project0-Aaron\\user_data\\" + calendarId + ".json";
+		try {
+			Paths.get(filepath);
+		} catch (InvalidPathException e) {
+			return false;
+		}
+		return true;
 	}
 
 }
