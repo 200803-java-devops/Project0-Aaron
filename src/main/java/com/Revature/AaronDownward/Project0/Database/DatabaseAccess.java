@@ -1,4 +1,4 @@
-package com.Revature.AaronDownward.Project0;
+package com.Revature.AaronDownward.Project0.Database;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+import com.Revature.AaronDownward.Project0.Objects.Calendar;
+import com.Revature.AaronDownward.Project0.Objects.Event;
 
 public class DatabaseAccess {
     

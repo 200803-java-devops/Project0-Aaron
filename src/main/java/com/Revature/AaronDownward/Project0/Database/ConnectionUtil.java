@@ -1,4 +1,4 @@
-package com.Revature.AaronDownward.Project0;
+package com.Revature.AaronDownward.Project0.Database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

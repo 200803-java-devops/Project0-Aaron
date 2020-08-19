@@ -1,10 +1,14 @@
-package com.Revature.AaronDownward.Project0;
+package com.Revature.AaronDownward.Project0.UserInput;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
+import com.Revature.AaronDownward.Project0.Objects.Calendar;
+import com.Revature.AaronDownward.Project0.Objects.Event;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
