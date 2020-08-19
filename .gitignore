@@ -5,3 +5,4 @@ target/
 .vscode/
 user_data/
 bash.exe.stackdump
+dependency-reduced-pom.xml
