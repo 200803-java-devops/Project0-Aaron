@@ -41,7 +41,7 @@ public class WizardListener implements Callable<String> {
                 newTimestamp = DatabaseAccess.getEventTimestamp(this.calendarId, this.eventId);
             }
             if (!timestamp.equals(newTimestamp)) {
-                System.out.println("A change has been made in the database to the " + this.scope + " you are editing. Exiting the wizard to avoid sync issues...");
+                System.out.println("A change has been made in the database to the " + this.scope + " you are editing. Will exit wizard to avoid sync issues: please press enter to continue");
                 return "stop";
             }
         }

@@ -67,7 +67,7 @@ public class EditEventCommand implements Callable<Integer> {
         if (wizard) {
             String[] eventDetails = UserInput.eventEditWizard();
             if (eventDetails == null) {
-                System.out.println("Something went wrong with the edit event wizard or caused it to exit early");
+                //System.out.println("Something went wrong with the edit event wizard or caused it to exit early");
                 return 2;
             }
             calendarId = eventDetails[0];

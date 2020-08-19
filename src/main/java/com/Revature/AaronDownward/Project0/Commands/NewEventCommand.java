@@ -97,13 +97,26 @@ public class NewEventCommand implements Callable<Integer> {
                 return 6;
             }
         }
-
         if (date == null) {
             System.out.println("A date for this event is required for the -d option if not using --wizard option");
             return 7;
         }
         // TODO implement date-time validation checks
-
+        if (name == null) {
+            name = "";
+        }
+        if (endDate == null) {
+            endDate = "";
+        }
+        if (startTime == null) {
+            startTime = "";
+        }
+        if (endTime == null) {
+            endTime = "";
+        }
+        if (description == null) {
+            description = "";
+        }
         ArrayList<String> attendeesList = new ArrayList<String>();
         if (attendees != null) {
             for (String attendee : attendees) {
